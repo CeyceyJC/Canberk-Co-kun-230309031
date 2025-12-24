@@ -1,0 +1,102 @@
+public class Supplier {
+
+    private String supplierId;
+    private String name;
+    private String email;
+    private String phone;
+
+    public Supplier(String supplierId, String name, String email, String phone) {
+        this.supplierId = supplierId;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+    }
+
+    public String getSupplierId() {
+        return supplierId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+public class Product implements Storable {
+
+    private String productId;
+    private String name;
+    private double price;
+    private int stock;
+    private int minStock;
+    private Supplier supplier;
+
+    public Product(String productId, String name, double price,
+                   int stock, Supplier supplier, int minStock) {
+
+        this.productId = productId;
+        this.name = name;
+        this.price = price;
+        this.stock = stock;
+        this.supplier = supplier;
+        this.minStock = minStock;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public int getMinStock() {
+        return minStock;
+    }
+
+    public Supplier getSupplier() {
+        return supplier;
+    }
+
+    public void increaseStock(int amount) {
+        stock += amount;
+    }
+
+    public boolean decreaseStock(int amount) {
+        if (amount > stock) {
+            return false;
+        }
+        stock -= amount;
+        return true;
+    }
+
+    public boolean isLowStock(int threshold) {
+        return stock <= threshold;
+    }
+
+    @Override
+    public String getStorageKey() {
+        return productId;
+    }
+
+    @Override
+    public String toStorageString() {
+        return productId + "," + name + "," + price + "," + stock;
+    }
+
+    @Override
+    public String toString() {
+        return productId + " | " + name + " | Stok: " + stock;
+    }
+}
