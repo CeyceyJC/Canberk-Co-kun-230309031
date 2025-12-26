@@ -1,3 +1,4 @@
+Class:
 1- Supplier
 2- Product
 3- PerishableProduct
@@ -5,3 +6,5 @@
 5- Inventory
 6- Stock Manager
 7- Main
+New - İnterface:
+1- Storable
