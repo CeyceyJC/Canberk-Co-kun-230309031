@@ -25,6 +25,8 @@ public class Supplier {
     }
 }
 
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 public class Product implements Storable {
 
     private String productId;
@@ -100,3 +102,45 @@ public class Product implements Storable {
         return productId + " | " + name + " | Stok: " + stock;
     }
 }
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import java.timr.LocalDate;
+import java.util.Objects;
+
+class PerishableProduct extends Product {
+    private LocalDate experiyDate;
+
+    public PerishableProduct (String productId, String name, double price, int stock, Supplier supplier, int minStock, LocalDate expiryDate) {
+        super (productId, name, price, stock, supplier, minStock, expiryDate);
+        this.expiryDate = Objects.requireNonNull(expiryDate);
+    }
+
+    @Override
+    public String toStorageString() {
+        return String.join(",",
+            "PerishableProduct",
+            escape(getProductId()),
+            escape(getName()),
+            String.valueOf(getPrice()),
+            String.valueOf(getStock()),
+            escape(()),
+            escape(()),
+            String.valueOf(getMinStock()),
+            expirtDate.toString()
+        };
+    }
+
+    @override
+    public String toString() {
+        return "PerishableProduct(id= " + getProductId() + ", name= " + getName() + ", price" + getPrice() + ", stock= " + getStock() + ", supplier= " + getSupplier().getName() +", minStock= " + getMinStock() + ", expiry= " + expiryDate + ", expired= " + isExpired() + "}";
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import java.timr.LocalDate;
+import java.util.Objects;
+
+class Order {
+    
