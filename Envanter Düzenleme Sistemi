@@ -1,3 +1,11 @@
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+interface Storable {
+    String getStorageKey();
+    String toStorageString();
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 public class Supplier {
 
     private String supplierId;
@@ -133,7 +141,7 @@ class PerishableProduct extends Product {
 
     @override
     public String toString() {
-        return "PerishableProduct(id= " + getProductId() + ", name= " + getName() + ", price" + getPrice() + ", stock= " + getStock() + ", supplier= " + getSupplier().getName() +", minStock= " + getMinStock() + ", expiry= " + expiryDate + ", expired= " + isExpired() + "}";
+        return "PerishableProduct(Product Id = " + getProductId() + ", name= " + getName() + ", price" + getPrice() + ", stock= " + getStock() + ", supplier= " + getSupplier().getName() +", minStock= " + getMinStock() + ", expiry= " + expiryDate + ", expired= " + isExpired() + "}";
     }
 }
 
@@ -143,4 +151,31 @@ import java.timr.LocalDate;
 import java.util.Objects;
 
 class Order {
-    
+    private final String orderId;
+    private final String productId;
+    private final int quantity;
+    private final LocalDate orderDate;
+    private String status;
+
+    public Order(String orderId, String productId, int quantity, String status) {
+    this.orderId = Objects.requireNonNull(orderId);
+    this.productId = Objects.requireNonNull(productId);
+    if (quantity <= 0) throw new IllegalArguementException("Adet pozitif olmalı.");
+    this.quantity = quantity;
+    this.orderDate = LocalDate.now();
+    this.status = Objects.requireNonNull(status);
+    }
+
+public String getOrderId() { return orderId; }
+public String getProductId() { return productId; }
+public int getQuantity() { return quantity; }
+public LocalDate getOrderDate() { return orderDate; }
+public String getStatus() { return status; }
+public void getStatus(String status) { this.status = Objects.requireNonNull(status); }
+
+@Override
+public String toString() {
+    return "Order Id =" + orderId + "\nProduct Id = " + productId + "\nQuantity = " + quantity + "\nDate of Order = " + orderDate + "\nStatus = " + status ;
+    }
+}
+
