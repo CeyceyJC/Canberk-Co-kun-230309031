@@ -408,3 +408,49 @@ class StockManager {
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import java.time.LocalDate;
+
+public class Main {
+    public static void main(String[] args) {
+        StockManager manager = new StockManager();
+
+        Supplier s1 = new Supplier("SUP-001", "Anadolu Tedarik", "info@anadolu.com", "0532 000 00 00");
+        Supplier s2 = new Supplier("SUP-002", "Ege Gıda", "iletisim@egegida.com", "0544 111 11 11");
+
+        manager.getInventory().addSupplier(s1);
+        manager.getInventory().addSupplier(s2);
+
+        Product p1 = new Product("P-100", "USB Kablo", 79.90, 10, s1, 5);
+        Product p2 = new Product("P-200", "Klavye", 799.00, 3, s1, 5);
+        PerishableProduct p3 = new PerishableProduct("P-300", "Süt (1L)", 39.50, 2, s2, 6, LocalDate.now().plusDays(5));
+
+        manager.addProduct(p1);
+        manager.addProduct(p2);
+        manager.addProduct(p3);
+
+        System.out.println("=== TÜM ÜRÜNLER ===");
+        manager.listAll();
+
+        System.out.println("\n=== ARAMA: 'k' ===");
+        manager.searchByName("k").forEach(System.out::println);
+
+        System.out.println("\n=== STOK GÜNCELLEME (P-200 +5) ===");
+        manager.updateStock("P-200", 5);
+
+        System.out.println("\n=== AZ STOK UYARISI (threshold=4) ===");
+        manager.printLowStockWarnings(4);
+
+        System.out.println("\n=== SİPARİŞ (P-300, 8 adet) ===");
+        Order o1 = manager.createOrder("ORD-001", "P-300", 8);
+        System.out.println(o1);
+
+        System.out.println("\n=== AUTO RESTOCK ===");
+        manager.autoRestockAll();
+        manager.listAll();
+
+        System.out.println("\n=== FİYAT ANALİZİ ===");
+        System.out.printf("Ortalama fiyat: %.2f TL%n", manager.averagePrice());
+        System.out.println("En pahalı: " + manager.mostExpensiveProduct());
+    }
+}
