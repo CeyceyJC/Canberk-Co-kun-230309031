@@ -299,3 +299,112 @@ class Inventory {
         return out;
     }
 }
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+class StockManager {
+    private final Inventory inventory = new Inventory();
+
+    public Inventory getInventory() { return inventory; }
+
+    public boolean addProduct(Product product) {
+        boolean ok = inventory.addProduct(product);
+        if (!ok) System.out.println("Uyarı: Bu ID ile ürün zaten var -> " + product.getProductId());
+        return ok;
+    }
+
+    public Product removeProduct(String productId) {
+        Product removed = inventory.removeProduct(productId);
+        if (removed == null) System.out.println("Uyarı: Ürün bulunamadı -> " + productId);
+        return removed;
+    }
+
+    public void updateStock(String productId, int delta) {
+        Product p = inventory.getProduct(productId);
+        if (p == null) {
+            System.out.println("Uyarı: Ürün yok -> " + productId);
+            return;
+        }
+
+        if (delta > 0) {
+            p.increaseStock(delta);
+        } else if (delta < 0) {
+            int amount = Math.abs(delta);
+            boolean ok = p.decreaseStock(amount);
+            if (!ok) System.out.println("Uyarı: Stok yetersiz! İstenen=" + amount + ", Mevcut=" + p.getStock());
+        } else {
+            System.out.println("Bilgi: Delta 0, değişiklik yok.");
+        }
+
+        System.out.println("Güncel stok: " + p.getProductId() + " -> " + p.getStock());
+    }
+
+    public List<Product> searchByName(String keyword) {
+        return inventory.searchByName(keyword);
+    }
+
+    public void printLowStockWarnings(int threshold) {
+        for (Product p : inventory.listAllProducts()) {
+            if (p.isLowStock(threshold)) {
+                System.out.println("AZ STOK! " + p.getProductId() + " | " + p.getName() + " | Stok=" + p.getStock());
+            }
+        }
+    }
+
+    public Order createOrder(String orderId, String productId, int qty) {
+        Product p = inventory.getProduct(productId);
+        if (p == null) {
+            System.out.println("Uyarı: Sipariş ürünü bulunamadı -> " + productId);
+            return new Order(orderId, productId, qty, "FAILED");
+        }
+
+        boolean ok = p.decreaseStock(qty);
+        if (!ok) {
+            System.out.println("Sipariş başarısız: stok yetersiz. Ürün=" + p.getName() + ", Stok=" + p.getStock());
+            return new Order(orderId, productId, qty, "FAILED");
+        }
+
+        System.out.println("Sipariş tamamlandı -> " + orderId);
+        return new Order(orderId, productId, qty, "COMPLETED");
+    }
+
+    public void autoRestockAll() {
+        for (Product p : inventory.listAllProducts()) {
+            if (p.getStock() < p.getMinStock()) {
+                int need = p.getMinStock() - p.getStock();
+                p.increaseStock(need);
+                System.out.println("AutoRestock: " + p.getProductId() + " +" + need + " (Yeni=" + p.getStock() + ")");
+            }
+        }
+    }
+
+    public double averagePrice() {
+        Collection<Product> all = inventory.listAllProducts();
+        if (all.isEmpty()) return 0.0;
+        double sum = 0;
+        for (Product p : all) sum += p.getPrice();
+        return sum / all.size();
+    }
+
+    public Product mostExpensiveProduct() {
+        Product best = null;
+        for (Product p : inventory.listAllProducts()) {
+            if (best == null || p.getPrice() > best.getPrice()) best = p;
+        }
+        return best;
+    }
+
+    public void saveToFile(String path) throws IOException {
+        inventory.saveToFile(path);
+    }
+
+    public void listAll() {
+        inventory.listAllProducts().forEach(System.out::println);
+    }
+}
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
